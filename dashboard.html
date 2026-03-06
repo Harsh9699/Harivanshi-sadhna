@@ -126,10 +126,25 @@ background:red;
 
 import { auth, db } from "./firebase.js";
 
-import { signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 import { collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
+
+// Protect dashboard (only logged-in users)
+
+onAuthStateChanged(auth,(user)=>{
+
+if(!user){
+
+window.location.href="login.html";
+
+}
+
+});
+
+
+// Logout function
 
 window.logout = async function(){
 
@@ -140,6 +155,8 @@ window.location.href="login.html";
 }
 
 
+// Submit sadhna
+
 window.submitSadhna = async function(){
 
 const mala = document.getElementById("mala").value;
@@ -148,27 +165,34 @@ const satsang = document.getElementById("satsang").value;
 
 const extra = document.getElementById("extra").value;
 
+const user = auth.currentUser;
+
 await addDoc(collection(db,"sadhna_reports"),{
 
+email:user.email,
 mala:mala,
 satsang:satsang,
 extra:extra,
-time:new Date()
+date:new Date().toLocaleDateString()
 
 });
 
-alert("Sadhna Submitted");
+alert("Sadhna Submitted Successfully 📿");
 
 location.reload();
 
 }
 
 
+// Load reports
+
 async function loadReports(){
 
 const querySnapshot = await getDocs(collection(db,"sadhna_reports"));
 
 const reportsDiv = document.getElementById("reports");
+
+reportsDiv.innerHTML="";
 
 querySnapshot.forEach((doc)=>{
 
@@ -177,6 +201,10 @@ const data = doc.data();
 reportsDiv.innerHTML += `
 
 <div class="report">
+
+<p><strong>Bhakt:</strong> ${data.email}</p>
+
+<p><strong>Date:</strong> ${data.date}</p>
 
 <p><strong>11 Mala:</strong> ${data.mala}</p>
 
