@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Login | Harivanshi Sadhna Bhakti</title>
+
+<style>
+
+body{
+margin:0;
+font-family:Arial;
+background:linear-gradient(135deg,#fff5e6,#ffe0b3);
+display:flex;
+justify-content:center;
+align-items:center;
+height:100vh;
+}
+
+.box{
+background:white;
+padding:40px;
+border-radius:10px;
+width:350px;
+text-align:center;
+box-shadow:0 0 10px rgba(0,0,0,0.1);
+}
+
+input{
+width:100%;
+padding:12px;
+margin:10px 0;
+border-radius:6px;
+border:1px solid #ccc;
+}
+
+button{
+width:100%;
+padding:12px;
+background:#ff9933;
+border:none;
+color:white;
+font-size:16px;
+border-radius:6px;
+cursor:pointer;
+}
+
+button:hover{
+background:#e67e00;
+}
+
+a{
+display:block;
+margin-top:15px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="box">
+
+<h2>Bhakt Login</h2>
+
+<input type="email" id="email" placeholder="Email">
+
+<input type="password" id="password" placeholder="Password">
+
+<button onclick="login()">Login</button>
+
+<a href="signup.html">Create New Account</a>
+
+</div>
+
+<script type="module">
+
+import { auth } from "./firebase.js";
+
+import { signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+window.login = async function(){
+
+const email = document.getElementById("email").value;
+
+const password = document.getElementById("password").value;
+
+try{
+
+await signInWithEmailAndPassword(auth,email,password);
+
+alert("Login Successful");
+
+window.location.href="dashboard.html";
+
+}catch(error){
+
+alert(error.message);
+
+}
+
+}
+
+</script>
+
+</body>
+
+</html>
