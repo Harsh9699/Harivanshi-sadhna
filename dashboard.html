@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Dashboard | Harivanshi Sadhna Bhakti</title>
+
+<style>
+
+body{
+font-family:Arial;
+margin:0;
+background:#fff5e6;
+}
+
+header{
+background:#ff9933;
+color:white;
+padding:15px;
+text-align:center;
+}
+
+.container{
+max-width:800px;
+margin:auto;
+padding:20px;
+}
+
+.form-box{
+background:white;
+padding:20px;
+border-radius:10px;
+margin-bottom:30px;
+box-shadow:0 0 10px rgba(0,0,0,0.1);
+}
+
+input,textarea,select{
+width:100%;
+padding:10px;
+margin:10px 0;
+border-radius:6px;
+border:1px solid #ccc;
+}
+
+button{
+background:#ff9933;
+color:white;
+border:none;
+padding:10px 20px;
+border-radius:6px;
+cursor:pointer;
+}
+
+button:hover{
+background:#e67e00;
+}
+
+.report{
+background:white;
+padding:15px;
+border-radius:10px;
+margin-bottom:15px;
+box-shadow:0 0 5px rgba(0,0,0,0.1);
+}
+
+.logout{
+float:right;
+background:red;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<header>
+
+<h2>Harivanshi Sadhna Bhakti Dashboard</h2>
+
+<button class="logout" onclick="logout()">Logout</button>
+
+</header>
+
+
+<div class="container">
+
+<div class="form-box">
+
+<h3>Submit Today's Sadhna</h3>
+
+<label>Did you complete 11 Mala?</label>
+
+<select id="mala">
+<option value="Yes">Yes</option>
+<option value="No">No</option>
+</select>
+
+<label>Did you listen to 30 min Satsang?</label>
+
+<select id="satsang">
+<option value="Yes">Yes</option>
+<option value="No">No</option>
+</select>
+
+<label>Extra Sadhna</label>
+
+<textarea id="extra" placeholder="Write additional bhakti you did..."></textarea>
+
+<button onclick="submitSadhna()">Submit Report</button>
+
+</div>
+
+
+<h3>Bhakti Reports</h3>
+
+<div id="reports"></div>
+
+</div>
+
+
+<script type="module">
+
+import { auth, db } from "./firebase.js";
+
+import { signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+import { collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+
+window.logout = async function(){
+
+await signOut(auth);
+
+window.location.href="login.html";
+
+}
+
+
+window.submitSadhna = async function(){
+
+const mala = document.getElementById("mala").value;
+
+const satsang = document.getElementById("satsang").value;
+
+const extra = document.getElementById("extra").value;
+
+await addDoc(collection(db,"sadhna_reports"),{
+
+mala:mala,
+satsang:satsang,
+extra:extra,
+time:new Date()
+
+});
+
+alert("Sadhna Submitted");
+
+location.reload();
+
+}
+
+
+async function loadReports(){
+
+const querySnapshot = await getDocs(collection(db,"sadhna_reports"));
+
+const reportsDiv = document.getElementById("reports");
+
+querySnapshot.forEach((doc)=>{
+
+const data = doc.data();
+
+reportsDiv.innerHTML += `
+
+<div class="report">
+
+<p><strong>11 Mala:</strong> ${data.mala}</p>
+
+<p><strong>Satsang:</strong> ${data.satsang}</p>
+
+<p><strong>Extra Sadhna:</strong> ${data.extra}</p>
+
+</div>
+
+`;
+
+});
+
+}
+
+loadReports();
+
+</script>
+
+</body>
+
+</html>
