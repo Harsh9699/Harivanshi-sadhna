@@ -1,6 +1,9 @@
 import { auth } from "./firebase.js";
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword } 
-from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+import { 
+createUserWithEmailAndPassword,
+signInWithEmailAndPassword
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 
 // SIGNUP
@@ -8,24 +11,26 @@ const signupForm = document.getElementById("signup-form");
 
 if (signupForm) {
 
-signupForm.addEventListener("submit", function(e){
+signupForm.addEventListener("submit", async (e) => {
+
 e.preventDefault();
 
 const email = document.getElementById("email").value;
 const password = document.getElementById("password").value;
 
-createUserWithEmailAndPassword(auth, email, password)
-.then((userCredential) => {
+try {
 
-alert("Account created successfully");
-window.location.href="dashboard.html";
+await createUserWithEmailAndPassword(auth, email, password);
 
-})
-.catch((error) => {
+alert("Account Created Successfully");
+
+window.location.href = "dashboard.html";
+
+} catch (error) {
 
 alert(error.message);
 
-});
+}
 
 });
 
@@ -38,24 +43,26 @@ const loginForm = document.getElementById("login-form");
 
 if (loginForm) {
 
-loginForm.addEventListener("submit", function(e){
+loginForm.addEventListener("submit", async (e) => {
+
 e.preventDefault();
 
 const email = document.getElementById("email").value;
 const password = document.getElementById("password").value;
 
-signInWithEmailAndPassword(auth, email, password)
-.then((userCredential) => {
+try {
 
-alert("Login successful");
-window.location.href="dashboard.html";
+await signInWithEmailAndPassword(auth, email, password);
 
-})
-.catch((error) => {
+alert("Login Successful");
+
+window.location.href = "dashboard.html";
+
+} catch (error) {
 
 alert(error.message);
 
-});
+}
 
 });
 
